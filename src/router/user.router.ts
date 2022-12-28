@@ -1,8 +1,6 @@
 import express from "express";
-import { Request as JwtRequest } from "express-jwt";
-import { body } from "express-validator";
-import response from "../app/response.js";
-import { loginController, registerController } from "../controller/user.controller.js";
+import { body, query } from "express-validator";
+import { findAllUserList, login, register, updateUser } from "../controller/user.controller.js";
 import validate from "../middleware/validate.js";
 
 const userRouter = express.Router();
@@ -12,9 +10,9 @@ userRouter.post(
   body("username").isString(),
   body("password").isString(),
   body("email").isEmail(),
-  body("phone").isString(),
+  body("phone").isMobilePhone('zh-CN'),
   validate,
-  registerController
+  register
 );
 
 userRouter.post(
@@ -22,12 +20,20 @@ userRouter.post(
   body("username").isString(),
   body("password").isString(),
   validate,
-  loginController
+  login
 )
 
-userRouter.get("/user", (req: JwtRequest, res) => {
-  console.log(req.auth);
-  res.json(response.Success(req.auth));
-});
+userRouter.get("/user/list",
+  query('pageNum').isInt(),
+  query('pageSize').isInt(),
+  validate,
+  findAllUserList
+);
+
+userRouter.put('/user',
+  body("username").isString(),
+  validate,
+  updateUser
+)
 
 export default userRouter;

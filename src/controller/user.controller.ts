@@ -1,37 +1,61 @@
 import { Request, Response } from 'express';
+import { Request as JwtRequest } from 'express-jwt';
 import jwt from 'jsonwebtoken';
 import _ from 'lodash';
-import { createUser, findUserByName } from '../service/user.service.js'
+import { createUser, cryptoPassword, findAllUserListService, findUserByName, updateUserService } from '../service/user.service.js'
 import response from '../app/response.js';
 import config from '../app/config.js';
 
-export async function registerController(req: Request, res: Response) {
+export async function register(req: Request, res: Response) {
     const { username, password, email, phone } = req.body;
     const result = await createUser({
         username,
         password,
         email,
-        phone
+        phone,
     })
-    res.json(response.Success(_.omit(result, ['password'])))
+    if (result) {
+        res.json(response.Success(_.omit(result, ['password', 'isDelete'])))
+    } else {
+        res.json(response.Error('用户已存在'))
+    }
+
 }
 
-export async function loginController(req: Request, res: Response) {
-    // TODO: encrypt password and verify password about user
-    const { username } = req.body
-    const result = await findUserByName(username)
-    console.log(result?.id, result?.username)
+export async function login(req: Request, res: Response) {
+    const { username, password } = req.body
+    const user = await findUserByName(username)
+    if (!user) {
+        res.json(response.NotFound('用户不存在'))
+    }
+    if (!(user?.password === (await cryptoPassword(password)))) {
+        res.json(response.Error('用户密码错误'))
+        return
+    }
     const token =
         "Bearer " +
         jwt.sign(
             {
-                id: result?.id,
-                username: result?.username,
+                id: user?.id,
+                username: user?.username,
+                role: user?.role
             },
             config.SECRET,
             {
                 expiresIn: 3600 * 24 * 3,
             }
         );
-    res.json(response.Success({ ..._.omit(result, ['password']), token }))
+    res.json(response.Success({ ..._.omit(user, ['password', 'isDelete']), token }))
+}
+
+export async function findAllUserList(req: JwtRequest, res: Response) {
+    const pageNum = parseInt(req.query.pageNum as string)
+    const pageSize = parseInt(req.query.pageSize as string)
+    const result = await findAllUserListService(pageNum, pageSize)
+    res.json(response.Success(result))
+}
+
+export async function updateUser(req: JwtRequest, res: Response) {
+    await updateUserService({ ...req.body, password: parseInt(req.body.password) })
+    res.json(response.Success())
 }

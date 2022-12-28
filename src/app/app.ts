@@ -1,7 +1,6 @@
 import express, { NextFunction, Request, Response } from "express";
 import "reflect-metadata";
 import { expressjwt as jwt, UnauthorizedError } from "express-jwt";
-import cors from "cors";
 import response from "./response.js";
 import config from "./config.js";
 import "./database.js";
@@ -9,17 +8,14 @@ import "./database.js";
 const app = express();
 
 app.use(express.json());
-
 app.use(
   jwt({
     secret: config.SECRET,
     algorithms: ["HS256"],
-    credentialsRequired: false,
   }).unless({
-    path: ["/api/user/login"],
+    path: ["/api/user/login", "/api/user/register"],
   })
 );
-
 app.use(
   (
     error: UnauthorizedError,
@@ -33,7 +29,5 @@ app.use(
     next();
   }
 );
-
-app.use(cors());
 
 export default app;

@@ -3,6 +3,7 @@ import { DataSource, Repository } from "typeorm";
 import { User } from "../entity/user.entity.js";
 import mockjs from "mockjs";
 import config from "./config.js";
+import { Category } from "../entity/category.entity.js";
 
 const { Random } = mockjs;
 
@@ -13,7 +14,7 @@ export const AppDataSource = new DataSource({
   username: config.DATABASE_USER,
   password: config.DATABASE_PASSWORD,
   database: config.DATABASE_NAME,
-  entities: [User],
+  entities: [User, Category],
   synchronize: true,
   logging: false,
 });
