@@ -10,6 +10,7 @@ const {
   DATABASE_PORT = "3306",
   DATABASE_PASSWORD = "lyxa1105",
   DATABASE_NAME = "cs-community",
+  ADMIN_PASSWORD = 'lyxa1105'
 } = process.env;
 
 const config = {
@@ -20,6 +21,7 @@ const config = {
   DATABASE_PORT,
   DATABASE_PASSWORD,
   DATABASE_NAME,
+  ADMIN_PASSWORD
 };
 
 export default config;

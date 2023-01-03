@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToMany, JoinTable } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToMany, JoinTable, ManyToOne, Relation } from "typeorm";
+import { User } from "./user.entity.js";
 import { Category } from "./category.entity.js";
 
 @Entity()
@@ -15,9 +16,15 @@ export class Post {
     @Column({ type: 'text' })
     content: string
 
+    @ManyToOne(() => User, (user) => user.posts)
+    user: Relation<User>;
+
     @ManyToMany(() => Category)
     @JoinTable()
-    categories: Category[]
+    /**
+     * why add Relation<>?:https://stackoverflow.com/questions/60363353/typeorm-onetomany-causes-referenceerror-cannot-access-entity-before-initia
+     */
+    categories: Relation<Category>[]
 
     @CreateDateColumn()
     create_at: Date

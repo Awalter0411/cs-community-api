@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { Request as JwtRequest } from 'express-jwt';
 import jwt from 'jsonwebtoken';
 import _ from 'lodash';
-import { createUser, cryptoPassword, findAllUserListService, findUserByName, updateUserService } from '../service/user.service.js'
+import { createUser, cryptoPassword, findAllUserListService, findUserByIdService, findUserByName, updateUserService } from '../service/user.service.js'
 import response from '../app/response.js';
 import config from '../app/config.js';
 
@@ -58,4 +58,10 @@ export async function findAllUserList(req: JwtRequest, res: Response) {
 export async function updateUser(req: JwtRequest, res: Response) {
     await updateUserService({ ...req.body, password: parseInt(req.body.password) })
     res.json(response.Success())
+}
+
+export async function findUserById(req: JwtRequest, res: Response) {
+    const id = parseInt(req.params.id)
+    const result = await findUserByIdService(id)
+    res.json(response.Success(result))
 }

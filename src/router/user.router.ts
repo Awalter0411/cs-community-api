@@ -1,6 +1,6 @@
 import express from "express";
-import { body, query } from "express-validator";
-import { findAllUserList, login, register, updateUser } from "../controller/user.controller.js";
+import { body, param, query } from "express-validator";
+import { findAllUserList, findUserById, login, register, updateUser } from "../controller/user.controller.js";
 import validate from "../middleware/validate.js";
 
 const userRouter = express.Router();
@@ -34,6 +34,12 @@ userRouter.put('/user',
   body("username").isString(),
   validate,
   updateUser
+)
+
+userRouter.get('/user/:id',
+  param('id').isInt(),
+  validate,
+  findUserById
 )
 
 export default userRouter;

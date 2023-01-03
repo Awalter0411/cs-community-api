@@ -37,3 +37,8 @@ export async function updateUserService(user: Required<User>) {
   }
   return await userRepo.createQueryBuilder("user").update({ ...user }).where("user.username = :username", { username }).execute()
 }
+
+export async function findUserByIdService(id: number) {
+  const UserRepo = AppDataSource.getRepository(User);
+  return await UserRepo.findOne({ where: { id } })
+}

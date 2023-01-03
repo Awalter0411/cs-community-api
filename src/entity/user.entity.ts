@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, Relation } from "typeorm";
+import { Post } from "./post.entity.js";
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -39,6 +40,9 @@ export class User {
     default: UserRole.USER
   })
   role: UserRole
+
+  @OneToMany(() => Post, (post) => post.user)
+  posts: Relation<Post>[];
 
   @CreateDateColumn()
   create_at: Date
