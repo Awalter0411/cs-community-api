@@ -1,9 +1,10 @@
 import "reflect-metadata";
 import { DataSource, Repository } from "typeorm";
-import { User } from "../entity/user.entity.js";
 import mockjs from "mockjs";
 import config from "./config.js";
+import { User } from "../entity/user.entity.js";
 import { Category } from "../entity/category.entity.js";
+import { Post } from "../entity/post.entity.js";
 
 const { Random } = mockjs;
 
@@ -14,7 +15,7 @@ export const AppDataSource = new DataSource({
   username: config.DATABASE_USER,
   password: config.DATABASE_PASSWORD,
   database: config.DATABASE_NAME,
-  entities: [User, Category],
+  entities: [User, Category, Post],
   synchronize: true,
   logging: false,
 });
