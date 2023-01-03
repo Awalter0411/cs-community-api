@@ -19,7 +19,8 @@ app.use(
     secret: config.SECRET,
     algorithms: ["HS256"],
   }).unless({
-    path: excludeAuthPath
+    path: excludeAuthPath,
+    ext: [".jpg", ".html", ".css", ".js"]
   })
 );
 app.use(
@@ -35,5 +36,6 @@ app.use(
     next();
   }
 );
+app.use(express.static('public'))
 
 export default app;

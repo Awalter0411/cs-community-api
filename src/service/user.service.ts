@@ -2,16 +2,35 @@ import crypto from 'crypto'
 import { AppDataSource } from "../app/database.js"
 import { User } from "../entity/user.entity.js"
 
-export async function findUserByName(username: string) {
+export async function findUserByNameService(username: string) {
   const userRepo = await AppDataSource.getRepository(User)
   return await userRepo.findOne({ where: { username, isDelete: false } })
 }
 
+export async function findUserByPhoneService(phone: string) {
+  const userRepo = await AppDataSource.getRepository(User)
+  return await userRepo.findOne({ where: { phone, isDelete: false } })
+}
+
+export async function findUserByEmailService(phone: string) {
+  const userRepo = await AppDataSource.getRepository(User)
+  return await userRepo.findOne({ where: { phone, isDelete: false } })
+}
+
 export async function createUser(user: Pick<User, 'username' | 'password' | 'email' | 'phone'>) {
   const userRepo = AppDataSource.getRepository(User);
-  const isExist = await findUserByName(user.username)
-  if (isExist) {
-    return false
+  const isExistName = await findUserByNameService(user.username) ? '用户名已存在' : ''
+  const isExistPhone = await findUserByPhoneService(user.phone) ? '邮箱已绑定' : ''
+  const isExistEmail = await findUserByEmailService(user.email) ? '电话已绑定' : ''
+  const map = {
+    isExistName,
+    isExistPhone,
+    isExistEmail
+  }
+  for (const key in map) {
+    if (key) {
+      return [false, key]
+    }
   }
   user.password = await cryptoPassword(String(user.password))
   const newUser = await userRepo.create(user);
@@ -40,5 +59,5 @@ export async function updateUserService(user: Required<User>) {
 
 export async function findUserByIdService(id: number) {
   const UserRepo = AppDataSource.getRepository(User);
-  return await UserRepo.findOne({ where: { id } })
+  return await UserRepo.findOne({ where: { id, isDelete: false } })
 }

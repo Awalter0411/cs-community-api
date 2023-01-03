@@ -1,6 +1,6 @@
 import express from "express";
 import { body, param, query } from "express-validator";
-import { findAllUserList, findUserById, login, register, updateUser } from "../controller/user.controller.js";
+import { findAllUserList, findUserById, findUserInfo, login, register, updateUser } from "../controller/user.controller.js";
 import validate from "../middleware/validate.js";
 
 const userRouter = express.Router();
@@ -22,6 +22,8 @@ userRouter.post(
   validate,
   login
 )
+
+userRouter.get('/user', findUserInfo)
 
 userRouter.get("/user/list",
   query('pageNum').isInt(),

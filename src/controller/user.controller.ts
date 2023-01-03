@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { Request as JwtRequest } from 'express-jwt';
 import jwt from 'jsonwebtoken';
 import _ from 'lodash';
-import { createUser, cryptoPassword, findAllUserListService, findUserByIdService, findUserByName, updateUserService } from '../service/user.service.js'
+import { createUser, cryptoPassword, findAllUserListService, findUserByIdService, findUserByNameService, updateUserService } from '../service/user.service.js'
 import response from '../app/response.js';
 import config from '../app/config.js';
 
@@ -14,17 +14,17 @@ export async function register(req: Request, res: Response) {
         email,
         phone,
     })
-    if (result) {
-        res.json(response.Success(_.omit(result, ['password', 'isDelete'])))
+    if (!(result instanceof Array)) {
+        res.json(response.Success(_.omit(result, ['password', 'isDelete']), '注册成功'))
     } else {
-        res.json(response.Error('用户已存在'))
+        res.json(response.Error(result[1] as string))
     }
 
 }
 
 export async function login(req: Request, res: Response) {
     const { username, password } = req.body
-    const user = await findUserByName(username)
+    const user = await findUserByNameService(username)
     if (!user) {
         res.json(response.NotFound('用户不存在'))
     }
@@ -45,7 +45,7 @@ export async function login(req: Request, res: Response) {
                 expiresIn: 3600 * 24 * 3,
             }
         );
-    res.json(response.Success({ ..._.omit(user, ['password', 'isDelete']), token }))
+    res.json(response.Success({ ..._.omit(user, ['password', 'isDelete']), token }, '登录成功'))
 }
 
 export async function findAllUserList(req: JwtRequest, res: Response) {
@@ -64,4 +64,10 @@ export async function findUserById(req: JwtRequest, res: Response) {
     const id = parseInt(req.params.id)
     const result = await findUserByIdService(id)
     res.json(response.Success(result))
+}
+
+export async function findUserInfo(req: JwtRequest, res: Response) {
+    const id = req.auth?.id as number
+    const result = await findUserByIdService(id)
+    res.json(response.Success(_.omit(result, ['password'])))
 }
