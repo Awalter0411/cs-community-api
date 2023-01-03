@@ -7,13 +7,19 @@ import "./database.js";
 
 const app = express();
 
+const excludeAuthPath = [
+  "/api/user/login",
+  "/api/user/register",
+  "/api/category",
+]
+
 app.use(express.json());
 app.use(
   jwt({
     secret: config.SECRET,
     algorithms: ["HS256"],
   }).unless({
-    path: ["/api/user/login", "/api/user/register"],
+    path: excludeAuthPath
   })
 );
 app.use(

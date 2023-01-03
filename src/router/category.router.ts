@@ -1,6 +1,6 @@
 import express from 'express'
-import { body, query } from 'express-validator'
-import { createCategory, findCategoryList } from '../controller/category.controller.js'
+import { body, query, param } from 'express-validator'
+import { createCategory, deleteCategory, findCategoryList } from '../controller/category.controller.js'
 import validate from '../middleware/validate.js'
 
 const categoryRouter = express.Router()
@@ -16,6 +16,12 @@ categoryRouter.get('/category',
     query('pageSize').isInt(),
     validate,
     findCategoryList
+)
+
+categoryRouter.delete('/category/:id',
+    param('id').isInt(),
+    validate,
+    deleteCategory
 )
 
 export default categoryRouter
