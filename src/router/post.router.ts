@@ -1,6 +1,6 @@
 import express from 'express'
 import { body, query, param } from 'express-validator'
-import { createPost, deletePost, findPostById, findPostList } from '../controller/post.controller.js'
+import { collectionPost, createPost, deletePost, findCollectionPost, findPostById, findPostList, findStarPost, starPost } from '../controller/post.controller.js'
 import validate from '../middleware/validate.js'
 
 const postRouter = express.Router()
@@ -20,6 +20,26 @@ postRouter.get('/post',
     query('categoryId').isInt(),
     validate,
     findPostList
+)
+
+postRouter.get('/post/star',
+    findStarPost
+)
+
+postRouter.post('/post/star/:id',
+    param('id').isInt(),
+    validate,
+    starPost
+)
+
+postRouter.get('/post/collection',
+    findCollectionPost
+)
+
+postRouter.post('/post/collection/:id',
+    param('id').isInt(),
+    validate,
+    collectionPost
 )
 
 postRouter.get('/post/:id',

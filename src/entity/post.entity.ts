@@ -16,6 +16,18 @@ export class Post {
     @Column({ type: 'text' })
     content: string
 
+    @Column()
+    cover: string
+
+    @Column({ default: 0 })
+    stars: number
+
+    @Column({ default: 0 })
+    views: number
+
+    @Column({ default: 0 })
+    collections: number
+
     @ManyToOne(() => User, (user) => user.posts)
     user: Relation<User>;
 
