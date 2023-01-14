@@ -17,7 +17,6 @@ postRouter.post('/post',
 postRouter.get('/post',
     query('pageNum').isInt(),
     query('pageSize').isInt(),
-    query('categoryId').isInt(),
     validate,
     findPostList
 )

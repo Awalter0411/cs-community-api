@@ -11,6 +11,7 @@ const excludeAuthPath = [
   "/api/user/login",
   "/api/user/register",
   "/api/category",
+  "/api/post"
 ]
 
 app.use(express.json());

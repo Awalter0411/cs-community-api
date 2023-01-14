@@ -17,18 +17,20 @@ export async function findUserByEmailService(phone: string) {
   return await userRepo.findOne({ where: { phone, isDelete: false } })
 }
 
-export async function createUser(user: Pick<User, 'username' | 'password' | 'email' | 'phone'>) {
+export async function createUserService(user: Pick<User, 'username' | 'password' | 'email' | 'phone' | 'role'>) {
   const userRepo = AppDataSource.getRepository(User);
   const isExistName = await findUserByNameService(user.username) ? '用户名已存在' : ''
   const isExistPhone = await findUserByPhoneService(user.phone) ? '邮箱已绑定' : ''
   const isExistEmail = await findUserByEmailService(user.email) ? '电话已绑定' : ''
+  console.log(isExistName)
   const map = {
     isExistName,
     isExistPhone,
     isExistEmail
   }
-  for (const key in map) {
-    if (key) {
+
+  for (const [key, value] of Object.entries(map)) {
+    if (value) {
       return [false, key]
     }
   }
@@ -43,9 +45,9 @@ export async function cryptoPassword(password: string) {
   return hash.digest('hex')
 }
 
-export async function findAllUserListService(pageNum: number, pageSize: number) {
+export async function findAllUserListService() {
   const userRepo = AppDataSource.getRepository(User);
-  return await userRepo.find({ where: { isDelete: false }, take: pageSize, skip: (pageNum - 1) * pageSize })
+  return await userRepo.findAndCount({ where: { isDelete: false } })
 }
 
 export async function updateUserService(user: Required<User>) {
@@ -60,4 +62,9 @@ export async function updateUserService(user: Required<User>) {
 export async function findUserByIdService(id: number) {
   const UserRepo = AppDataSource.getRepository(User);
   return await UserRepo.findOne({ where: { id, isDelete: false } })
+}
+
+export async function deleteUserService(id: number) {
+  const UserRepo = AppDataSource.getRepository(User);
+  return await UserRepo.update({ id }, { isDelete: true })
 }

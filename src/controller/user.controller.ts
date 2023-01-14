@@ -2,24 +2,41 @@ import { Request, Response } from 'express';
 import { Request as JwtRequest } from 'express-jwt';
 import jwt from 'jsonwebtoken';
 import _ from 'lodash';
-import { createUser, cryptoPassword, findAllUserListService, findUserByIdService, findUserByNameService, updateUserService } from '../service/user.service.js'
+import { createUserService, cryptoPassword, deleteUserService, findAllUserListService, findUserByIdService, findUserByNameService, updateUserService } from '../service/user.service.js'
 import response from '../app/response.js';
 import config from '../app/config.js';
+import { UserRole } from '../entity/user.entity.js';
 
 export async function register(req: Request, res: Response) {
     const { username, password, email, phone } = req.body;
-    const result = await createUser({
+    const result = await createUserService({
         username,
         password,
         email,
         phone,
+        role: UserRole.USER
     })
     if (!(result instanceof Array)) {
         res.json(response.Success(_.omit(result, ['password', 'isDelete']), '注册成功'))
     } else {
         res.json(response.Error(result[1] as string))
     }
+}
 
+export async function createUser(req: Request, res: Response) {
+    const { username, password, email, phone, role } = req.body;
+    const result = await createUserService({
+        username,
+        password,
+        email,
+        phone,
+        role
+    })
+    if (!(result instanceof Array)) {
+        res.json(response.Success(_.omit(result, ['password', 'isDelete']), '创建成功'))
+    } else {
+        res.json(response.Error(result[1] as string))
+    }
 }
 
 export async function login(req: Request, res: Response) {
@@ -49,10 +66,8 @@ export async function login(req: Request, res: Response) {
 }
 
 export async function findAllUserList(req: JwtRequest, res: Response) {
-    const pageNum = parseInt(req.query.pageNum as string)
-    const pageSize = parseInt(req.query.pageSize as string)
-    const result = await findAllUserListService(pageNum, pageSize)
-    res.json(response.Success(result))
+    const result = await findAllUserListService()
+    res.json(response.Success({ list: result[0], count: result[1] }))
 }
 
 export async function updateUser(req: JwtRequest, res: Response) {
@@ -70,4 +85,11 @@ export async function findUserInfo(req: JwtRequest, res: Response) {
     const id = req.auth?.id as number
     const result = await findUserByIdService(id)
     res.json(response.Success(_.omit(result, ['password'])))
+}
+
+
+export async function deleteUser(req: JwtRequest, res: Response) {
+    const id = parseInt(req.params.id)
+    const result = await deleteUserService(id)
+    res.json(response.Success(_, '删除成功'))
 }

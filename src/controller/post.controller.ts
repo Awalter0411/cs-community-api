@@ -6,7 +6,10 @@ import { findCategoryByIdService } from "../service/category.service.js";
 import { createPostService, deletePostService, findPostByCateService, findPostByIdService, findPostListService, findStarPostService, starPostService, findCollectionPostService, collectionPostService } from "../service/post.service.js";
 
 export async function createPost(req: Request, res: Response) {
-    const { title, description, content, category, cover }: { title: string, description: string, content: string, category: number[], cover: string } = req.body
+    let { title, description, content, category, cover }: { title: string, description: string, content: string, category: number[], cover: string } = req.body
+    if (!cover) {
+        cover = 'http://localhost:5000/xxx.jpg'
+    }
     const categories: Category[] = []
     for (let i = 0; i < category.length; i++) {
         const tmp = await findCategoryByIdService(category[i])
