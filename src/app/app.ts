@@ -11,7 +11,8 @@ const excludeAuthPath = [
   "/api/user/login",
   "/api/user/register",
   "/api/category",
-  "/api/post"
+  // "/api/post",
+  "/api/upload",
 ]
 
 app.use(express.json());
@@ -22,7 +23,7 @@ app.use(
   }).unless({
     path: excludeAuthPath,
     ext: [".jpg", ".html", ".css", ".js"]
-  })
+  }),
 );
 app.use(
   (

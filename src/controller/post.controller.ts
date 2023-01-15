@@ -3,9 +3,11 @@ import { Request as JwtRequest } from "express-jwt";
 import response from "../app/response.js";
 import { Category } from "../entity/category.entity.js";
 import { findCategoryByIdService } from "../service/category.service.js";
-import { createPostService, deletePostService, findPostByCateService, findPostByIdService, findPostListService, findStarPostService, starPostService, findCollectionPostService, collectionPostService } from "../service/post.service.js";
+import { getPostListByCateService, createPostService, deletePostService, findPostByCateService, findPostByIdService, findPostListService, findStarPostService, starPostService, findCollectionPostService, collectionPostService } from "../service/post.service.js";
 
-export async function createPost(req: Request, res: Response) {
+export async function createPost(req: JwtRequest, res: Response) {
+    const id = req.auth?.id
+    console.log(id)
     let { title, description, content, category, cover }: { title: string, description: string, content: string, category: number[], cover: string } = req.body
     if (!cover) {
         cover = 'http://localhost:5000/xxx.jpg'
@@ -17,7 +19,7 @@ export async function createPost(req: Request, res: Response) {
             categories.push(tmp)
         }
     }
-    const result = await createPostService({ title, description, content, categories, cover })
+    const result = await createPostService({ title, description, content, categories, cover }, id)
     res.json(response.Success(result))
 }
 
@@ -71,4 +73,10 @@ export async function collectionPost(req: JwtRequest, res: Response) {
     const postId = parseInt(req.params.id)
     const msg = await collectionPostService(postId, userId)
     res.json(response.Success(null, msg))
+}
+
+export async function getPostListByCate(req: JwtRequest, res: Response) {
+    const categoryId = parseInt(req.query.cateId as string)
+    const result = await getPostListByCateService(categoryId)
+    res.json(response.Success({ list: result[0], count: result[1] }))
 }

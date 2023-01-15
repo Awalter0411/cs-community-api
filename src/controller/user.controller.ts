@@ -70,6 +70,7 @@ export async function findAllUserList(req: JwtRequest, res: Response) {
     res.json(response.Success({ list: result[0], count: result[1] }))
 }
 
+// todo
 export async function updateUser(req: JwtRequest, res: Response) {
     await updateUserService({ ...req.body, password: parseInt(req.body.password) })
     res.json(response.Success())

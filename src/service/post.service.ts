@@ -3,11 +3,15 @@ import { Category } from "../entity/category.entity.js";
 import { CollectionPost } from "../entity/collectionPost.entity.js";
 import { Post } from "../entity/post.entity.js";
 import { StarPost } from "../entity/starPost.entity.js";
+import { User } from "../entity/user.entity.js";
 import { findCategoryByIdService } from "./category.service.js";
 
-export async function createPostService(postData: Pick<Post, 'title' | 'description' | 'content' | 'categories' | 'cover'>) {
+export async function createPostService(postData: Pick<Post, 'title' | 'description' | 'content' | 'categories' | 'cover'>, userId: number) {
     const PostRepo = await AppDataSource.getRepository(Post)
     const newPost = await PostRepo.create(postData)
+    const UserRepo = await AppDataSource.getRepository(User)
+    const user = await UserRepo.findOne({ where: { id: userId } })
+    newPost.user = user!
     return await PostRepo.manager.save(newPost)
 }
 
@@ -32,7 +36,7 @@ export async function findPostByCateService(pageNum: number, pageSize: number, c
 
 export async function findPostByIdService(id: number) {
     const PostRepo = await AppDataSource.getRepository(Post)
-    const result = await PostRepo.findOne({ where: { id, isDelete: false }, relations: { categories: true } })
+    const result = await PostRepo.findOne({ where: { id, isDelete: false }, relations: { categories: true, user: true } })
     if (result) {
         await PostRepo.update({ id }, { views: ++result.views })
     }
@@ -108,4 +112,19 @@ export async function findCollectionPostService(userId: number) {
         result.push(tmp!)
     }
     return result
+}
+
+export async function getPostListByCateService(id: number) {
+    const CategoryRepo = await AppDataSource.getRepository(Category)
+    const PostRepo = await AppDataSource.getRepository(Post)
+    const category = await CategoryRepo.findOne({ where: { id } }) as Category
+    const result = await (await PostRepo.findAndCount({ relations: ["categories", "user"], where: { isDelete: false } }))
+    const postList = result[0].filter(post => {
+        const cate = post.categories.filter(cate => cate.id === category.id)
+        if (cate.length > 0) {
+            return post
+        }
+    }
+    )
+    return [postList, postList.length]
 }

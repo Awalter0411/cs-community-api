@@ -17,7 +17,7 @@ export class Resource {
     @Column()
     cover: string;
 
-    @Column()
+    @Column({ default: 0 })
     views: number
 
     @CreateDateColumn()

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
+import response from "../app/response.js";
 
 export async function uploadImage(req: Request, res: Response) {
-   console.log(req.file)
-   res.json({msg:'success'})
+   res.json(response.Success({ link: `${req.protocol}://${req.hostname}:5000/${req.file?.filename}` }))
 }
 

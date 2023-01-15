@@ -25,3 +25,13 @@ export async function deleteCategoryService(id: number) {
     const CategoryRepo = await AppDataSource.getRepository(Category)
     return await CategoryRepo.update({ id }, { isDelete: true })
 }
+
+export async function updateCategoryService(id: number, name: string) {
+    const CategoryRepo = await AppDataSource.getRepository(Category)
+    return await CategoryRepo.update({ id }, { name })
+}
+
+export async function getCategoryByIdService(id: number) {
+    const CategoryRepo = await AppDataSource.getRepository(Category)
+    return await CategoryRepo.findOne({ where: { id } })
+}

@@ -15,8 +15,8 @@ const upload = multer({ storage })
 const uploadRouter = express.Router();
 
 uploadRouter.post(
-    "/upload/image",
-    upload.single('image'),
+    "/upload",
+    upload.single('file'),
     uploadImage
 );
 

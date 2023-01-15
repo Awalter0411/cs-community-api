@@ -1,6 +1,6 @@
-import { Request, Response } from 'express'
+import e, { Request, Response } from 'express'
 import response from '../app/response.js'
-import { createCategoryService, deleteCategoryService, findCategoryListService } from '../service/category.service.js'
+import { createCategoryService, deleteCategoryService, findCategoryListService, getCategoryByIdService, updateCategoryService } from '../service/category.service.js'
 
 export async function createCategory(req: Request, res: Response) {
     const { name = '' } = req.body
@@ -21,3 +21,15 @@ export async function deleteCategory(req: Request, res: Response) {
     res.json(response.Success(result))
 }
 
+export async function updateCategory(req: Request, res: Response) {
+    const id = parseInt(req.params.id)
+    const { name }: { name: string } = req.body
+    const result = await updateCategoryService(id, name)
+    res.json(response.Success(result, '更新成功'))
+}
+
+export async function getCategoryById(req: Request, res: Response) {
+    const id = parseInt(req.params.id)
+    const result = await getCategoryByIdService(id)
+    res.json(response.Success(result))
+}

@@ -35,6 +35,11 @@ export class User {
   company: string;
 
   @Column({
+    default: 'http://localhost:5000/1673684826066-macos-big-sur-apple-layers-fluidic-colorful-wwdc-stock-4096x2304-1455.jpg'
+  })
+  avatar: string
+
+  @Column({
     type: 'enum',
     enum: UserRole,
     default: UserRole.USER

@@ -43,7 +43,6 @@ userRouter.get("/user/list",
 );
 
 userRouter.put('/user',
-  body("username").isString(),
   validate,
   updateUser
 )
