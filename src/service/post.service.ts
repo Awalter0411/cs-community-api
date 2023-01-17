@@ -128,3 +128,43 @@ export async function getPostListByCateService(id: number) {
     )
     return [postList, postList.length]
 }
+
+export async function getPostListByUserService(userId: number) {
+    const PostRepo = await AppDataSource.getRepository(Post)
+    const result = await (await PostRepo.findAndCount({ relations: ["categories", "user"], where: { isDelete: false } }))
+    const postList = result[0].filter(post => {
+        return post.user.id === userId
+    }
+    )
+    return [postList, postList.length]
+}
+
+export async function getStarPostListByUserService(userId: number) {
+    const PostRepo = await AppDataSource.getRepository(Post)
+    const UserRepo = await AppDataSource.getRepository(User)
+    const StarPostRepo = await AppDataSource.getRepository(StarPost)
+    const user = await UserRepo.findOne({ where: { id: userId } })
+    const stars = await StarPostRepo.find({ where: { userId: user?.id } })
+    const postList: Post[] = []
+    for (let i = 0; i < stars.length; i++) {
+        const item = stars[i]
+        const post = await PostRepo.findOne({ where: { id: item.postId, isDelete: false }, relations: { categories: true, user: true } }) as Post
+        postList.push(post)
+    }
+    return [postList, postList.length]
+}
+
+export async function getCollectPostListByUserService(userId: number) {
+    const PostRepo = await AppDataSource.getRepository(Post)
+    const UserRepo = await AppDataSource.getRepository(User)
+    const CollectionPostRepo = await AppDataSource.getRepository(CollectionPost)
+    const user = await UserRepo.findOne({ where: { id: userId } })
+    const collections = await CollectionPostRepo.find({ where: { userId: user?.id } })
+    const postList: Post[] = []
+    for (let i = 0; i < collections.length; i++) {
+        const item = collections[i]
+        const post = await PostRepo.findOne({ where: { id: item.postId, isDelete: false }, relations: { categories: true, user: true } }) as Post
+        postList.push(post)
+    }
+    return [postList, postList.length]
+}

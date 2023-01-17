@@ -1,6 +1,6 @@
 import express from 'express'
 import { body, param } from 'express-validator'
-import { createResource, deleteResource, findResourceList } from '../controller/resource.controller.js'
+import { getResourceInfoById, createResource, deleteResource, findResourceList } from '../controller/resource.controller.js'
 import validate from '../middleware/validate.js'
 
 const resourceRouter = express.Router()
@@ -15,6 +15,11 @@ resourceRouter.post('/resource',
 
 resourceRouter.get('/resource',
   findResourceList
+)
+
+resourceRouter.get('/resource/:id',
+  param('id').isString(),
+  getResourceInfoById
 )
 
 resourceRouter.delete('/resource/:id',

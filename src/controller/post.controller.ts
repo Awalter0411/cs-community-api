@@ -3,7 +3,7 @@ import { Request as JwtRequest } from "express-jwt";
 import response from "../app/response.js";
 import { Category } from "../entity/category.entity.js";
 import { findCategoryByIdService } from "../service/category.service.js";
-import { getPostListByCateService, createPostService, deletePostService, findPostByCateService, findPostByIdService, findPostListService, findStarPostService, starPostService, findCollectionPostService, collectionPostService } from "../service/post.service.js";
+import { getCollectPostListByUserService,getStarPostListByUserService, getPostListByUserService, getPostListByCateService, createPostService, deletePostService, findPostByCateService, findPostByIdService, findPostListService, findStarPostService, starPostService, findCollectionPostService, collectionPostService } from "../service/post.service.js";
 
 export async function createPost(req: JwtRequest, res: Response) {
     const id = req.auth?.id
@@ -78,5 +78,23 @@ export async function collectionPost(req: JwtRequest, res: Response) {
 export async function getPostListByCate(req: JwtRequest, res: Response) {
     const categoryId = parseInt(req.query.cateId as string)
     const result = await getPostListByCateService(categoryId)
+    res.json(response.Success({ list: result[0], count: result[1] }))
+}
+
+export async function getPostListByUser(req: JwtRequest, res: Response) {
+    const userId = req.auth?.id as number
+    const result = await getPostListByUserService(userId)
+    res.json(response.Success({ list: result[0], count: result[1] }))
+}
+
+export async function getStarPostListByUser(req: JwtRequest, res: Response) {
+    const userId = req.auth?.id as number
+    const result = await getStarPostListByUserService(userId)
+    res.json(response.Success({ list: result[0], count: result[1] }))
+}
+
+export async function getCollectPostListByUser(req: JwtRequest, res: Response) {
+    const userId = req.auth?.id as number
+    const result = await getCollectPostListByUserService(userId)
     res.json(response.Success({ list: result[0], count: result[1] }))
 }

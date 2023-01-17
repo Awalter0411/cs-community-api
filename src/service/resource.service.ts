@@ -21,3 +21,8 @@ export async function deleteResourceService(id: number) {
   const ResourceRepo = await AppDataSource.getRepository(Resource)
   return await ResourceRepo.update({ id }, { isDelete: true })
 }
+
+export async function getResourceInfoByIdService(id: number) {
+  const ResourceRepo = await AppDataSource.getRepository(Resource)
+  return await ResourceRepo.findOne({ where: { id, isDelete: false } })
+}
