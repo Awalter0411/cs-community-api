@@ -9,6 +9,7 @@ import { StarPost } from "../entity/starPost.entity.js";
 import { CollectionPost } from "../entity/collectionPost.entity.js";
 import { Resource } from "../entity/resource.entity.js";
 import { StarResource } from "../entity/starResource.entity.js";
+import { Activity } from "../entity/activity.entity.js";
 
 export const AppDataSource = new DataSource({
   type: "mysql",
@@ -17,7 +18,7 @@ export const AppDataSource = new DataSource({
   username: config.DATABASE_USER,
   password: config.DATABASE_PASSWORD,
   database: config.DATABASE_NAME,
-  entities: [User, Category, Post, StarPost, CollectionPost, Resource, StarResource],
+  entities: [User, Category, Post, StarPost, CollectionPost, Resource, StarResource, Activity],
   synchronize: true,
   logging: false,
 });
