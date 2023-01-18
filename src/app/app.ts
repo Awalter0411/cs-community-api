@@ -22,7 +22,7 @@ app.use(
     algorithms: ["HS256"],
   }).unless({
     path: excludeAuthPath,
-    ext: [".jpg", ".html", ".css", ".js"]
+    ext: [".jpg", ".html", ".css", ".js", "jpeg"]
   }),
 );
 app.use(
