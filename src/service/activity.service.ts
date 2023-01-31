@@ -1,4 +1,3 @@
-import { Raw } from "typeorm";
 import { AppDataSource } from "../app/database.js";
 import { Activity } from "../entity/activity.entity.js";
 
@@ -39,6 +38,7 @@ export async function getActivityByIdService(id: number) {
 
 export async function getActivityByDateService(date: string) {
   const newDate = date.split('-').join("")
+  console.log(newDate)
   return await AppDataSource
     .query(`select * from \`cs-community\`.activity where DATE_FORMAT(date, '%Y%m%d') = '${newDate}'`)
 }

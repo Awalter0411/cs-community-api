@@ -16,7 +16,7 @@ activityRouter.post('/activity',
 )
 
 activityRouter.get('/activity/date',
-  query('date').isDate(),
+  query('date').isString(),
   validate,
   getActivityByDate
 )

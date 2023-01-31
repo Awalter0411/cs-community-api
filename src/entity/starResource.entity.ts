@@ -1,14 +1,15 @@
-import { Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, Relation, CreateDateColumn, UpdateDateColumn, Column } from "typeorm";
-import { User } from "./user.entity.js";
+import { Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Column } from "typeorm";
 
 @Entity()
 export class StarResource {
     @PrimaryGeneratedColumn()
     id: number
 
-    @ManyToMany(() => User)
-    @JoinTable()
-    user: Relation<User>[]
+    @Column()
+    userId: number
+
+    @Column()
+    resourceId: number
 
     @CreateDateColumn()
     create_at: Date

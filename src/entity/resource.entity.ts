@@ -20,6 +20,9 @@ export class Resource {
     @Column({ default: 0 })
     views: number
 
+    @Column({ default: 0 })
+    stars: number
+
     @CreateDateColumn()
     create_at: Date
 
