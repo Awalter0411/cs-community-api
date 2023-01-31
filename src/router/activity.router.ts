@@ -1,6 +1,6 @@
 import express from 'express'
-import { body, param } from 'express-validator'
-import { createActivity, deleteActivity, findActivityList, getActivityById, updateActivity } from '../controller/activity.controller.js'
+import { body, param, query } from 'express-validator'
+import { createActivity, deleteActivity, findActivityList, getActivityByDate, getActivityById, updateActivity } from '../controller/activity.controller.js'
 import validate from '../middleware/validate.js'
 
 const activityRouter = express.Router()
@@ -13,6 +13,12 @@ activityRouter.post('/activity',
   body('date').isString(),
   validate,
   createActivity
+)
+
+activityRouter.get('/activity/date',
+  query('date').isDate(),
+  validate,
+  getActivityByDate
 )
 
 activityRouter.get('/activity',
@@ -36,5 +42,6 @@ activityRouter.get('/activity/:id',
   validate,
   getActivityById
 )
+
 
 export default activityRouter

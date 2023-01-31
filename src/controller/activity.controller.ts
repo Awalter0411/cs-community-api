@@ -1,6 +1,6 @@
 import { Request as JwtRequest } from "express-jwt";
 import { Response } from 'express'
-import { createActivityService, findActivityListService, deleteActivityService, updateActivityService, getActivityByIdService } from "../service/activity.service.js";
+import { createActivityService, findActivityListService, deleteActivityService, updateActivityService, getActivityByIdService, getActivityByDateService } from "../service/activity.service.js";
 import response from "../app/response.js";
 
 export async function createActivity(req: JwtRequest, res: Response) {
@@ -54,4 +54,10 @@ export async function getActivityById(req: JwtRequest, res: Response) {
   const id = parseInt(req.params.id)
   const result = await getActivityByIdService(id)
   res.json(response.Success(result))
+}
+
+export async function getActivityByDate(req: JwtRequest, res: Response) {
+  const date = req.query.date as string
+  const result = await getActivityByDateService(date)
+  res.json(response.Success({ list: result, count: result.length }))
 }

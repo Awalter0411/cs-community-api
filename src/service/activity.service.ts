@@ -1,3 +1,4 @@
+import { Raw } from "typeorm";
 import { AppDataSource } from "../app/database.js";
 import { Activity } from "../entity/activity.entity.js";
 
@@ -34,4 +35,10 @@ export async function updateActivityService(id: number, activity: Record<string,
 export async function getActivityByIdService(id: number) {
   const ActivityRepo = await AppDataSource.getRepository(Activity)
   return await ActivityRepo.findOne({ where: { id, isDelete: false } })
+}
+
+export async function getActivityByDateService(date: string) {
+  const newDate = date.split('-').join("")
+  return await AppDataSource
+    .query(`select * from \`cs-community\`.activity where DATE_FORMAT(date, '%Y%m%d') = '${newDate}'`)
 }
